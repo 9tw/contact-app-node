@@ -35,6 +35,15 @@ yargs.command({
     handler(argv) {
         contacts.simpanContact(argv.nama, argv.email, argv.noHP);
     },
+})
+.demandCommand();
+
+yargs.command({
+    command: 'list',
+    describe: 'Menampilkan semua contact',
+    handler() {
+        contacts.listContact();
+    },
 });
 
 yargs.parse();
