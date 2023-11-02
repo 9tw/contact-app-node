@@ -1,10 +1,13 @@
 const fs = require('fs');
-const readline = require('readline');
+const chalk = require('chalk');
+const validator = require('validator');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-});
+// const readline = require('readline');
+
+// const rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
 
 const dirPath = './data';
 if (!fs.existsSync(dirPath)) {
@@ -16,23 +19,51 @@ if (!fs.existsSync(dataPath)) {
     fs.writeFileSync(dataPath, '[]', 'utf-8');
 }
 
-const tulisPertanyaan = (pertanyaan) => {
-    return new Promise((resolve, reject) => {
-        rl.question(pertanyaan, (nama) => {
-            resolve(nama);
-        });
-    });
-};
+// const tulisPertanyaan = (pertanyaan) => {
+//     return new Promise((resolve, reject) => {
+//         rl.question(pertanyaan, (nama) => {
+//             resolve(nama);
+//         });
+//     });
+// };
 
 const simpanContact = (nama, email, noHP) => {
     const contact = { nama, email, noHP };
     const file =  fs.readFileSync('./data/contacts.json', 'utf-8');
     const contacts = JSON.parse(file);
 
+    // cek duplikat nama
+    const duplikat = contacts.find((contact) => contact.nama === nama);
+    if (duplikat) {
+        console.log(
+            chalk.red.inverse.bold(`Nama sudah terdaftar.`)
+        );
+        return false;
+    }
+
+    // cek email
+    if (email) {
+        if (!validator.isEmail(email)) {
+            console.log(
+                chalk.red.inverse.bold(`Isi Email dengan benar.`)
+            );
+            return false;
+        }
+    }
+
+    // cek no HP
+    if (!validator.isMobilePhone(noHP, 'id-ID')) {
+        console.log(
+            chalk.red.inverse.bold(`No HP tidak diketahui.`)
+        );
+        return false;
+    }
+
     contacts.push(contact);
     fs.writeFileSync('./data/contacts.json', JSON.stringify(contacts));
-    console.log('Terima kasih sudah memasukan data.')
-    rl.close();
+    console.log(
+        chalk.green.inverse.bold('Terima kasih sudah memasukan data.')
+    );
 };
 
-module.exports = {tulisPertanyaan, simpanContact};
+module.exports = {simpanContact};
