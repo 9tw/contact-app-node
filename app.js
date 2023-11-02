@@ -1,4 +1,5 @@
 const contacts = require('./contacts');
+const yargs = require("yargs");
 
 // const main = async () => {
 //     const nama = await contacts.tulisPertanyaan('Masukan nama anda : ');
@@ -10,8 +11,7 @@ const contacts = require('./contacts');
 
 // main();
 
-const yargs = require("yargs");
-
+// perintah menambahkan kontak
 yargs.command({
     command: 'add',
     describe: 'Menambahkan contact baru',
@@ -38,11 +38,28 @@ yargs.command({
 })
 .demandCommand();
 
+// perintah melihat kontak
 yargs.command({
     command: 'list',
     describe: 'Menampilkan semua contact',
     handler() {
         contacts.listContact();
+    },
+});
+
+// perintah melihat detail kontak
+yargs.command({
+    command: 'detail',
+    describe: 'Menampilkan detail contact',
+    builder: {
+        nama: {
+            describe: 'Nama lengkap',
+            demandOption: true,
+            type: 'string',
+        },
+    },
+    handler(argv) {
+        contacts.detailContact(argv.nama);
     },
 });
 
