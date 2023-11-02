@@ -102,4 +102,22 @@ const detailContact = (nama) => {
     }
 };
 
-module.exports = {simpanContact, listContact, detailContact};
+const deleteContact = (nama) => {
+    const contacts = loadContact();
+    const newContacts = contacts.filter(
+        (contact) => contact.nama.toLowerCase() !== nama.toLowerCase()
+    );
+
+    if (contacts.length === newContacts.length) {
+        console.log(
+            chalk.red.inverse.bold(`${nama} tidak ditemukan!`)
+        );
+        return false;
+    }
+    fs.writeFileSync('./data/contacts.json', JSON.stringify(newContacts));
+    console.log(
+        chalk.green.inverse.bold(`${nama} terhapus!`)
+    );
+};
+
+module.exports = {simpanContact, listContact, detailContact, deleteContact};
